@@ -1,0 +1,15 @@
+// Typography
+.calendar {
+  p {
+    font-size: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: $green;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

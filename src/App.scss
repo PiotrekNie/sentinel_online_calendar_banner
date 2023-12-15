@@ -1,5 +1,6 @@
-.App {
-  text-align: center;
+body {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .App-logo {
@@ -36,3 +37,14 @@
     transform: rotate(360deg);
   }
 }
+
+@import 'assets/styles/variables';
+@import 'assets/styles/mixins';
+@import 'assets/styles/typography';
+@import 'assets/styles/headings';
+@import 'assets/styles/portlet';
+@import 'assets/styles/news-list';
+@import 'assets/styles/news-item';
+@import 'assets/styles/loader';
+@import 'assets/styles/calendar';
+@import 'assets/styles/legend';

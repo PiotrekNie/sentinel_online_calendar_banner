@@ -1,0 +1,9 @@
+@import "assets/styles/variables";
+@import "assets/styles/mixins";
+
+.portlet-boundary_sentinelnews_ {
+  .portlet-title-text {
+    font-weight: 700;
+    @include fluid-type(32, 48, 480, 1200);
+  }
+}

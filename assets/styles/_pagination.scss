@@ -1,0 +1,135 @@
+@import "assets/styles/variables";
+@import "assets/styles/mixins";
+
+.pagination {
+  &-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 1rem;
+
+    @include media-breakpoint-up(md) {
+      flex-direction: row;
+    }
+
+    .dropdown {
+      width: 100%;
+
+      @include media-breakpoint-up(md) {
+        width: auto;
+      }
+
+      .btn {
+        width: 100%;
+
+        @include media-breakpoint-up(md) {
+          width: auto;
+        }
+      }
+    }
+  }
+
+  &-col {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+      width: auto;
+    }
+
+    &:first-of-type {
+      flex-direction: column;
+
+      @include media-breakpoint-up(md) {
+        flex-direction: row;
+      }
+
+      .btn {
+        border-color: $gray;
+
+        &:first-of-type {
+          padding: 0.5rem 1rem 0.5rem 3rem;
+
+          &:after {
+            right: auto;
+            left: 1rem;
+            transform: rotate(-180deg);
+          }
+        }
+
+        &:last-of-type {
+          padding: 0.5rem 1rem;
+
+          &:after {
+            display: none;
+          }
+        }
+      }
+    }
+
+    &:last-of-type {
+      flex-direction: column-reverse;
+
+      @include media-breakpoint-up(md) {
+        flex-direction: row;
+      }
+
+      .btn {
+        color: $green;
+        border-color: $gray;
+
+        &:first-of-type {
+          padding: 0.5rem 1rem;
+
+          &:after {
+            display: none;
+          }
+        }
+
+        &:last-of-type {
+          padding: 0.5rem 3rem 0.5rem 1rem;
+
+          &:after {
+            right: 1rem;
+          }
+        }
+
+        &:disabled {
+          color: rgba($green, 0.5);
+        }
+      }
+    }
+
+    .btn {
+      width: 100%;
+
+      @include media-breakpoint-up(md) {
+        width: auto;
+      }
+
+      &:hover {
+        border-color: $white;
+      }
+
+      &:disabled {
+        opacity: 1;
+      }
+    }
+  }
+
+  &-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+
+    @include media-breakpoint-up(md) {
+      justify-content: flex-end;
+      width: auto;
+    }
+  }
+}

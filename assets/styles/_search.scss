@@ -1,0 +1,212 @@
+@import "assets/styles/variables";
+@import "assets/styles/mixins";
+
+.news {
+  &-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0.5rem;
+
+    @include media-breakpoint-up(md) {
+      padding-bottom: 2rem;
+      gap: 1.5rem;
+      justify-content: space-between;
+      flex-direction: row;
+    }
+
+    form {
+      width: 100%;
+
+      @include media-breakpoint-up(md) {
+        max-width: 50%;
+      }
+
+      .form-group {
+        margin-bottom: 0;
+      }
+
+      .input-group {
+        gap: 4px;
+
+        &-item {
+          position: relative;
+
+          input,
+          button {
+            height: 4.375rem;
+          }
+
+          button {
+            padding-left: 1rem;
+            padding-right: 1rem;
+
+            @include media-breakpoint-up(md) {
+              padding-left: 2rem;
+              padding-right: 2rem;
+            }
+          }
+
+          &.has-error {
+            .error-message {
+              position: absolute;
+              bottom: -2rem;
+              font-size: 0.85rem;
+              color: $red;
+            }
+
+            input {
+              border: 1px solid $red;
+            }
+          }
+
+          input {
+            border-radius: 4px;
+            background-color: $dark-gray;
+            font-size: 14px;
+            padding-left: 2rem;
+            color: $white;
+            border-color: $dark-gray;
+
+            @include media-breakpoint-up(md) {
+              padding-left: 3rem;
+            }
+
+            &::placeholder {
+              color: rgba($white, 0.7);
+            }
+
+            &:focus {
+              background-color: $dark-gray;
+              border-color: $green;
+              box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.25rem $green;
+            }
+
+            &:-webkit-autofill,
+            &:-webkit-autofill:hover,
+            &:-webkit-autofill:focus {
+              background-color: $dark-gray;
+              border-color: $dark-gray;
+            }
+          }
+
+          input:-internal-autofill-selected {
+            background-color: $dark-gray;
+            border-color: $dark-gray;
+          }
+
+          .btn {
+            &-unstyled {
+              position: absolute;
+              z-index: 10;
+              right: 0;
+              font-size: 2rem;
+
+              &:hover {
+                color: $green;
+              }
+
+              span {
+                pointer-events: none;
+              }
+            }
+          }
+
+          &-shrink {
+            &.search-icon {
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              background-color: transparent;
+              border-radius: 0;
+              pointer-events: none;
+              left: 0.5rem;
+              width: 1.125rem;
+              height: 1.125rem;
+              z-index: 10;
+
+              @include media-breakpoint-up(md) {
+                left: 1.25rem;
+              }
+            }
+          }
+
+          &.input-group-append {
+            button {
+              border-bottom-left-radius: 4px;
+              border-top-left-radius: 4px;
+            }
+          }
+        }
+      }
+    }
+
+    // Date picker
+    .search-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+
+      @include media-breakpoint-up(md) {
+        gap: 1.5rem;
+        flex-direction: row;
+        width: auto;
+      }
+
+      .datepicker {
+        &-trigger {
+          height: 4.375rem;
+          padding: 1.5rem 3rem 1.5rem 1.5rem;
+          width: 100%;
+          text-align: left;
+          border-color: $gray;
+
+          @include media-breakpoint-up(md) {
+            width: 13.75rem;
+          }
+
+          &:hover {
+            border-color: $white;
+          }
+
+          &:after {
+            content: url("/o/evo-theme/images/arrow-down.svg");
+            right: 2rem;
+          }
+        }
+      }
+
+      .dropdown {
+        width: 100%;
+
+        @include media-breakpoint-up(md) {
+          width: auto;
+        }
+
+        &-topics {
+          button {
+            height: 4.375rem;
+            padding: 1.5rem 3rem 1.5rem 1.5rem;
+            width: 100%;
+            text-align: left;
+
+            @include media-breakpoint-up(md) {
+              width: 13.75rem;
+            }
+
+            &:hover {
+              border-color: $white;
+            }
+
+            &:disabled {
+              opacity: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}
