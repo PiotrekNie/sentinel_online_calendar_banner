@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import { useMediaQuery } from 'react-responsive';
 import Info from '../Info';
+import Loader from '../Loader';
 import { SCREENS } from '../../utils/screens';
 
 function CalendarSection(props) {
@@ -17,10 +18,8 @@ function CalendarSection(props) {
   const [dates, setDates] = useState([]);
   const [mobile, setMobile] = useState();
   const onChange = (nextValue) => {
-    console.log(nextValue);
     setValue(nextValue);
   };
-
   const onMonthChange = (nextValue) => {
     if (nextValue?.activeStartDate) {
       const getMonth = new Date(nextValue.activeStartDate).getMonth();
@@ -34,6 +33,20 @@ function CalendarSection(props) {
       setCurrentMonth(date);
     }
   };
+  const scrollToEvent = useCallback((ev) => {
+    const target = ev.target;
+    const targetClassList = target.classList;
+    const targetClassPattern = /\bdate\-(.*)\b/;
+    const targetDateClass = targetClassList.value.match(targetClassPattern)[0];
+
+    if (targetDateClass) {
+      const targetDate = document.querySelector(
+        `[data-date="${targetDateClass}"]`
+      );
+
+      targetDate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
 
   useEffect(() => {
     setMobile(isMobile);
@@ -44,15 +57,20 @@ function CalendarSection(props) {
   }, [currentMonth, searchCallback]);
 
   useEffect(() => {
-    console.log(highlights);
     setDates(highlights);
   }, [highlights]);
 
   return (
     <div className="calendar__heading">
-      <div className={`calendar__heading--component ${isLoading && 'loading'}`}>
+      <div
+        className={`calendar__heading--component ${isLoading ? 'loading' : ''}`}
+      >
+        {isLoading && <Loader loading={isLoading} />}
         <Calendar
           onChange={onChange}
+          onClickDay={(value, event) => {
+            scrollToEvent(event);
+          }}
           onActiveStartDateChange={onMonthChange}
           tileClassName={({ date }) => {
             let day = date.getDate();
@@ -73,11 +91,11 @@ function CalendarSection(props) {
             if (matchingDate) {
               switch (matchingDate.type) {
                 case 'maintenance':
-                  return 'highlighted-maintenance';
+                  return `highlighted-maintenance date-${realDate}`;
                 case 'event':
-                  return 'highlighted-event';
+                  return `highlighted-event date-${realDate}`;
                 case 'mixed':
-                  return 'highlighted-mixed';
+                  return `highlighted-mixed date-${realDate}`;
                 default:
                   break;
               }

@@ -52,6 +52,7 @@ const MaintenanceArticle = (props) => {
       className="news-item article-maintenance"
       itemScope
       itemType="https://schema.org/Article"
+      data-date={`date-${articleDate}`}
     >
       <div className="news-item__cont">
         <div className="news-item__cont--text">
