@@ -28,14 +28,13 @@ function CalendarContainer() {
     const objectToArray = Array.from(array);
 
     objectToArray.forEach((item) => {
-      const { calendarDateFrom, calendarDateTo, type } = item;
+      const { articleDate, calendarDateFrom, calendarDateTo, type } = item;
       const [fromDay, fromMonth, fromYear] = calendarDateFrom.split('-');
       const formattedDateStringFrom = `${fromYear}-${fromMonth}-${fromDay}`;
       const [toDay, toMonth, toYear] = calendarDateTo.split('-');
       const formattedDateStringTo = `${toYear}-${toMonth}-${toDay}`;
       const fromDate = new Date(formattedDateStringFrom);
       const toDate = new Date(formattedDateStringTo);
-
       for (
         let date = fromDate;
         date <= toDate;
@@ -52,7 +51,11 @@ function CalendarContainer() {
             existingEntry.type = 'mixed';
           }
         } else {
-          resultMap.set(formattedDate, { date: formattedDate, type });
+          resultMap.set(formattedDate, {
+            date: formattedDate,
+            articleDate,
+            type,
+          });
         }
       }
     });

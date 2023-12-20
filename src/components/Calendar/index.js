@@ -34,15 +34,17 @@ function CalendarSection(props) {
     }
   };
   const scrollToEvent = useCallback((ev) => {
-    const target = ev.target;
+    const { target } = ev;
     const targetClassList = target.classList;
     const targetClassPattern = /\bdate\-(.*)\b/;
-    const targetDateClass = targetClassList.value.match(targetClassPattern)[0];
+    const targetDateClass = targetClassList.value.match(targetClassPattern);
 
-    if (targetDateClass) {
+    if (targetDateClass instanceof Array) {
       const targetDate = document.querySelector(
-        `[data-date="${targetDateClass}"]`
+        `[data-date="${targetDateClass[0]}"]`
       );
+
+      if (!targetDate) return;
 
       targetDate.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -91,11 +93,11 @@ function CalendarSection(props) {
             if (matchingDate) {
               switch (matchingDate.type) {
                 case 'maintenance':
-                  return `highlighted-maintenance date-${realDate}`;
+                  return `highlighted-maintenance date-${matchingDate.articleDate}`;
                 case 'event':
-                  return `highlighted-event date-${realDate}`;
+                  return `highlighted-event date-${matchingDate.articleDate}`;
                 case 'mixed':
-                  return `highlighted-mixed date-${realDate}`;
+                  return `highlighted-mixed date-${matchingDate.articleDate}`;
                 default:
                   break;
               }
