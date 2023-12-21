@@ -3,9 +3,18 @@ import ImagePlaceholder from '../ImagePlaceholder/index';
 import Button from '../Button/index';
 
 const NewsArticle = (props) => {
-  const { title, description, previewImage, articleDate, url } = props;
+  const {
+    title,
+    description,
+    previewImage,
+    articleDate,
+    calendarDateFrom,
+    calendarDateTo,
+    url,
+  } = props;
   const [trimmedDescription, setTrimmedDescription] = useState('');
   const [createDate, setCreateDate] = useState('');
+  const [rangeDate, setRangeDate] = useState('');
 
   useEffect(() => {
     if (articleDate.length > 0) {
@@ -48,6 +57,31 @@ const NewsArticle = (props) => {
     }
   }, [description]);
 
+  useEffect(() => {
+    const createDateString = async () => {
+      const dateString = async (date) => {
+        const [year, month, day] = date.split('-');
+        const formattedDate = new Date(year, month - 1, day).toLocaleDateString(
+          'en-US',
+          {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          }
+        );
+
+        return formattedDate.replace(',', '');
+      };
+
+      const dateFrom = await dateString(calendarDateFrom);
+      const dateTo = await dateString(calendarDateTo);
+
+      setRangeDate(dateFrom === dateTo ? dateFrom : `${dateFrom} - ${dateTo}`);
+    };
+
+    createDateString();
+  }, [calendarDateFrom, calendarDateTo]);
+
   return (
     <article
       className="news-item article-news"
@@ -71,8 +105,8 @@ const NewsArticle = (props) => {
         <div className="news-item__cont--text">
           <div>
             {createDate && (
-              <time dateTime={createDate} itemProp="datePublished">
-                {createDate}
+              <time dateTime={rangeDate} itemProp="datePublished">
+                {rangeDate}
               </time>
             )}
             <h2 itemProp="name">{title}</h2>

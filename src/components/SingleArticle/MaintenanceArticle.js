@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Button from '../Button/index';
 
 const MaintenanceArticle = (props) => {
-  const { title, description, articleDate, url } = props;
+  const {
+    title,
+    description,
+    articleDate,
+    calendarDateFrom,
+    calendarDateTo,
+    url,
+  } = props;
   const [trimmedDescription, setTrimmedDescription] = useState('');
   const [createDate, setCreateDate] = useState('');
+  const [rangeDate, setRangeDate] = useState('');
 
   useEffect(() => {
     if (articleDate.length > 0) {
@@ -47,6 +55,31 @@ const MaintenanceArticle = (props) => {
     }
   }, [description]);
 
+  useEffect(() => {
+    const createDateString = async () => {
+      const dateString = async (date) => {
+        const [year, month, day] = date.split('-');
+        const formattedDate = new Date(year, month - 1, day).toLocaleDateString(
+          'en-US',
+          {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          }
+        );
+
+        return formattedDate.replace(',', '');
+      };
+
+      const dateFrom = await dateString(calendarDateFrom);
+      const dateTo = await dateString(calendarDateTo);
+
+      setRangeDate(dateFrom === dateTo ? dateFrom : `${dateFrom} - ${dateTo}`);
+    };
+
+    createDateString();
+  }, [calendarDateFrom, calendarDateTo]);
+
   return (
     <article
       className="news-item article-maintenance"
@@ -58,8 +91,8 @@ const MaintenanceArticle = (props) => {
         <div className="news-item__cont--text">
           <div>
             {createDate && (
-              <time dateTime={createDate} itemProp="datePublished">
-                {createDate}
+              <time dateTime={rangeDate} itemProp="datePublished">
+                {rangeDate}
               </time>
             )}
             <h2 itemProp="name">{title}</h2>
