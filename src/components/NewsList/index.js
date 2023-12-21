@@ -103,7 +103,7 @@ function CalendarContainer() {
     if (init) {
       newsItems(pageNo, searchValue.date);
     }
-  }, [pageNo, searchValue, newsItems]);
+  }, [pageNo, searchValue, newsItems, init]);
 
   return (
     <div className="calendar">
@@ -127,6 +127,8 @@ function CalendarContainer() {
                   title={item.title}
                   description={item.description}
                   articleDate={item.articleDate}
+                  calendarDateFrom={item.calendarDateFrom}
+                  calendarDateTo={item.calendarDateTo}
                   url={item.url}
                 />
               ) : (
@@ -136,6 +138,8 @@ function CalendarContainer() {
                   description={item.description}
                   previewImage={item.previewImage}
                   articleDate={item.articleDate}
+                  calendarDateFrom={item.calendarDateFrom}
+                  calendarDateTo={item.calendarDateTo}
                   url={item.url}
                 />
               )
