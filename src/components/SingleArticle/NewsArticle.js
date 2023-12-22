@@ -13,22 +13,7 @@ const NewsArticle = (props) => {
     url,
   } = props;
   const [trimmedDescription, setTrimmedDescription] = useState('');
-  const [createDate, setCreateDate] = useState('');
   const [rangeDate, setRangeDate] = useState('');
-
-  useEffect(() => {
-    if (articleDate.length > 0) {
-      const [day, month, year] = articleDate.split('-');
-      const dateObject = new Date(year, month - 1, day);
-      const formattedDate = dateObject.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-      });
-
-      setCreateDate(formattedDate.replace(',', ''));
-    }
-  }, [articleDate]);
 
   useEffect(() => {
     if (description.length > 0) {
@@ -104,7 +89,7 @@ const NewsArticle = (props) => {
         </div>
         <div className="news-item__cont--text">
           <div>
-            {createDate && (
+            {rangeDate && (
               <time dateTime={rangeDate} itemProp="datePublished">
                 {rangeDate}
               </time>

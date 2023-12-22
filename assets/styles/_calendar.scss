@@ -150,14 +150,21 @@
             }
           }
 
-          &--weekend {
-            color: $gray;
-
+          &--weekend,
+          &--highlighted {
             &[class*='highlighted'] {
               abbr {
                 color: $white;
               }
             }
+          }
+
+          &--weekend {
+            color: $gray;
+          }
+
+          &--neighboringMonth {
+            color: rgba($gray, 0.3);
           }
         }
       }
