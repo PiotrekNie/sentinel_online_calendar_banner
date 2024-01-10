@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
-import { useMediaQuery } from 'react-responsive';
-import Info from '../Info';
 import Loader from '../Loader';
-import { SCREENS } from '../../utils/screens';
 
 function CalendarSection(props) {
   const { isLoading, searchCallback, highlights } = props;
-  const isMobile = useMediaQuery({ maxWidth: SCREENS.lg });
   const [value, setValue] = useState(new Date());
+  const [lastDay, setLastDay] = useState();
+  const [firstDay, setFirstDay] = useState();
+  const [currentMonthName, setCurrentMonthName] = useState('');
   const [currentMonth, setCurrentMonth] = useState({
     date: {
       month: new Date().getMonth() + 1,
@@ -16,7 +15,6 @@ function CalendarSection(props) {
     },
   });
   const [dates, setDates] = useState([]);
-  const [mobile, setMobile] = useState();
   const onChange = (nextValue) => {
     setValue(nextValue);
   };
@@ -51,10 +49,6 @@ function CalendarSection(props) {
   }, []);
 
   useEffect(() => {
-    setMobile(isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
     searchCallback(currentMonth);
   }, [currentMonth, searchCallback]);
 
@@ -62,17 +56,63 @@ function CalendarSection(props) {
     setDates(highlights);
   }, [highlights]);
 
+  useEffect(() => {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    const firstDay = new Date(
+      currentMonth.date.year,
+      currentMonth.date.month - 1
+    );
+    const lastDay = new Date(
+      currentMonth.date.year,
+      currentMonth.date.month,
+      0
+    );
+
+    setFirstDay(firstDay);
+    setLastDay(lastDay);
+    setCurrentMonthName(months[currentMonth.date.month - 1]);
+  }, []);
+
   return (
     <div className="calendar__heading">
       <div
         className={`calendar__heading--component ${isLoading ? 'loading' : ''}`}
       >
         {isLoading && <Loader loading={isLoading} />}
+        <div className="react-calendar__navigation">
+          <div className="react-calendar__navigation--container">
+            <div
+              aria-label=""
+              className="react-calendar__navigation__label"
+              type="button"
+            >
+              <span className="react-calendar__navigation__label__labelText react-calendar__navigation__label__labelText--from">
+                {currentMonthName} {new Date().getFullYear()}
+              </span>
+            </div>
+          </div>
+        </div>
         <Calendar
           onChange={onChange}
           onClickDay={(value, event) => {
             scrollToEvent(event);
           }}
+          minDate={firstDay}
+          maxDate={lastDay}
+          showNavigation={false}
           onActiveStartDateChange={onMonthChange}
           tileClassName={({ date }) => {
             let day = date.getDate();
@@ -118,24 +158,6 @@ function CalendarSection(props) {
           locale={'en-GB'}
           value={value}
         />
-      </div>
-      <div className="col-span-4 calendar__heading--legend">
-        <h5>Calendar labels</h5>
-        <ul>
-          <li>
-            <span className="color color-events"></span>
-            <span>Events</span>
-          </li>
-          <li>
-            <span className="color color-maintenance"></span>
-            <span>Maintenance News</span>
-          </li>
-          <li>
-            <span className="color color-mixed"></span>
-            <span>Event and Maintenance News</span>
-          </li>
-        </ul>
-        {!mobile && <Info />}
       </div>
     </div>
   );

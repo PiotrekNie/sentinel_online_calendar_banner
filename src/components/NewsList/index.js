@@ -1,19 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import CalendarService from '../../api';
-import Loader from '../Loader';
-import NoDataError from '../NoDataError/index';
 import CalendarSection from '../Calendar';
-import MaintenanceArticle from '../SingleArticle/MaintenanceArticle';
-import NewsArticle from '../SingleArticle/NewsArticle';
-import { useMediaQuery } from 'react-responsive';
-import Info from '../Info';
-import { SCREENS } from '../../utils/screens';
 
 function CalendarContainer() {
-  const isMobile = useMediaQuery({ maxWidth: SCREENS.lg });
   const [init, setInit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState([]);
   const [pageNo, setPageNo] = useState(0);
   const [searchValue, setSearchValue] = useState({
     date: {
@@ -22,7 +13,6 @@ function CalendarContainer() {
     },
   });
   const [highlightedArticles, setHighlightedArticles] = useState([]);
-  const [mobile, setMobile] = useState();
   const combObjectDate = async (array) => {
     const resultMap = new Map();
     const objectToArray = Array.from(array);
@@ -73,7 +63,6 @@ function CalendarContainer() {
       const data = await CalendarService.getCalendarData(pageNo, date);
 
       if (data.items) {
-        setItems(data.items);
         const combItems = await combObjectDate(data.items);
 
         setHighlightedArticles(combItems);
@@ -96,10 +85,6 @@ function CalendarContainer() {
   );
 
   useEffect(() => {
-    setMobile(isMobile);
-  }, [isMobile]);
-
-  useEffect(() => {
     if (init) {
       newsItems(pageNo, searchValue.date);
     }
@@ -112,44 +97,6 @@ function CalendarContainer() {
         searchCallback={searchCallback}
         highlights={highlightedArticles}
       />
-      <div
-        className="calendar__container"
-        itemScope
-        itemType="https://schema.org/ItemList"
-      >
-        {isLoading && <Loader loading={isLoading} />}
-        {items.length > 0 ? (
-          <>
-            {items.map((item, index) =>
-              item.type === 'maintenance' ? (
-                <MaintenanceArticle
-                  key={index}
-                  title={item.title}
-                  description={item.description}
-                  articleDate={item.articleDate}
-                  calendarDateFrom={item.calendarDateFrom}
-                  calendarDateTo={item.calendarDateTo}
-                  url={item.url}
-                />
-              ) : (
-                <NewsArticle
-                  key={index}
-                  title={item.title}
-                  description={item.description}
-                  previewImage={item.previewImage}
-                  articleDate={item.articleDate}
-                  calendarDateFrom={item.calendarDateFrom}
-                  calendarDateTo={item.calendarDateTo}
-                  url={item.url}
-                />
-              )
-            )}
-          </>
-        ) : (
-          !isLoading && <NoDataError />
-        )}
-      </div>
-      {mobile && <Info />}
     </div>
   );
 }
