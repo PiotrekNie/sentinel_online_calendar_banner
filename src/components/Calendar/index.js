@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Calendar from 'react-calendar';
+import Tooltip from '../Tooltip';
 import Loader from '../Loader';
 
 function CalendarSection(props) {
-  const { isLoading, searchCallback, highlights } = props;
+  const { isLoading, highlights } = props;
+  const calendarRef = useRef(null);
   const [value, setValue] = useState(new Date());
   const [lastDay, setLastDay] = useState();
   const [firstDay, setFirstDay] = useState();
@@ -18,6 +20,39 @@ function CalendarSection(props) {
   const onChange = (nextValue) => {
     setValue(nextValue);
   };
+  const getDayName = useCallback((dateStr, locale) => {
+    const date = new Date(dateStr);
+
+    return date.toLocaleDateString(locale, { weekday: 'long' });
+  }, []);
+  const matchDate = useCallback(
+    (date) => {
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      const year = date.getFullYear();
+
+      if (day < 10) {
+        day = `0${day}`;
+      }
+
+      if (month < 10) {
+        month = `0${month}`;
+      }
+
+      const realDate = `${day}-${month}-${year}`;
+      const matchedDate = dates.find((val) => val.date === realDate);
+
+      return {
+        matchDate: matchedDate,
+        date: {
+          day,
+          month,
+          year,
+        },
+      };
+    },
+    [dates]
+  );
   const onMonthChange = (nextValue) => {
     if (nextValue?.activeStartDate) {
       const getMonth = new Date(nextValue.activeStartDate).getMonth();
@@ -31,26 +66,6 @@ function CalendarSection(props) {
       setCurrentMonth(date);
     }
   };
-  const scrollToEvent = useCallback((ev) => {
-    const { target } = ev;
-    const targetClassList = target.classList;
-    const targetClassPattern = /\bdate\-(.*)\b/;
-    const targetDateClass = targetClassList.value.match(targetClassPattern);
-
-    if (targetDateClass instanceof Array) {
-      const targetDate = document.querySelector(
-        `[data-date="${targetDateClass[0]}"]`
-      );
-
-      if (!targetDate) return;
-
-      targetDate.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, []);
-
-  useEffect(() => {
-    searchCallback(currentMonth);
-  }, [currentMonth, searchCallback]);
 
   useEffect(() => {
     setDates(highlights);
@@ -84,10 +99,10 @@ function CalendarSection(props) {
     setFirstDay(firstDay);
     setLastDay(lastDay);
     setCurrentMonthName(months[currentMonth.date.month - 1]);
-  }, []);
+  }, [currentMonth]);
 
   return (
-    <div className="calendar__heading">
+    <div className="calendar__heading" ref={calendarRef}>
       <div
         className={`calendar__heading--component ${isLoading ? 'loading' : ''}`}
       >
@@ -107,37 +122,64 @@ function CalendarSection(props) {
         </div>
         <Calendar
           onChange={onChange}
-          onClickDay={(value, event) => {
-            scrollToEvent(event);
-          }}
           minDate={firstDay}
           maxDate={lastDay}
           showNavigation={false}
           onActiveStartDateChange={onMonthChange}
+          tileContent={({ date }) => {
+            let horizontalOrientation = 'right';
+            const matchingDate = matchDate(date);
+
+            if (!matchingDate.matchDate) return;
+
+            const dayName = getDayName(
+              `${matchingDate.date.year}/${matchingDate.date.month}/${matchingDate.date.day}`,
+              'en-GB'
+            );
+
+            if (dayName) {
+              if (['Sunday'].includes(dayName)) horizontalOrientation = 'left';
+              else if (
+                [
+                  'Tuesday',
+                  'Wednesday',
+                  'Thursday',
+                  'Friday',
+                  'Saturday',
+                ].includes(dayName)
+              )
+                horizontalOrientation = 'center';
+            } else {
+              horizontalOrientation = 'right';
+            }
+
+            return (
+              matchingDate.matchDate && (
+                <Tooltip horizontalOrientation={horizontalOrientation}>
+                  {matchingDate.matchDate.items.map((item, index) => (
+                    <div className={`tooltip-item ${item.type}`} key={index}>
+                      <time>
+                        <span>{item.dateFrom}</span> -{' '}
+                        <span>{item.dateTo}</span>
+                      </time>
+                      <h4>{item.title}</h4>
+                    </div>
+                  ))}
+                </Tooltip>
+              )
+            );
+          }}
           tileClassName={({ date }) => {
-            let day = date.getDate();
-            let month = date.getMonth() + 1;
-            const year = date.getFullYear();
+            const matchingDate = matchDate(date);
 
-            if (day < 10) {
-              day = `0${day}`;
-            }
-
-            if (month < 10) {
-              month = `0${month}`;
-            }
-
-            const realDate = `${day}-${month}-${year}`;
-            const matchingDate = dates.find((val) => val.date === realDate);
-
-            if (matchingDate) {
-              switch (matchingDate.type) {
+            if (matchingDate.matchDate) {
+              switch (matchingDate.matchDate.type) {
                 case 'maintenance':
-                  return `highlighted-maintenance date-${matchingDate.articleDate}`;
+                  return `highlighted highlighted-maintenance date-${matchingDate.matchDate.articleDate}`;
                 case 'event':
-                  return `highlighted-event date-${matchingDate.articleDate}`;
+                  return `highlighted highlighted-event date-${matchingDate.matchDate.articleDate}`;
                 case 'mixed':
-                  return `highlighted-mixed date-${matchingDate.articleDate}`;
+                  return `highlighted highlighted-mixed date-${matchingDate.matchDate.articleDate}`;
                 default:
                   break;
               }
