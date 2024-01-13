@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Calendar from 'react-calendar';
-import Tooltip from '../Tooltip';
 import Loader from '../Loader';
 
 function CalendarSection(props) {
@@ -20,11 +19,6 @@ function CalendarSection(props) {
   const onChange = (nextValue) => {
     setValue(nextValue);
   };
-  const getDayName = useCallback((dateStr, locale) => {
-    const date = new Date(dateStr);
-
-    return date.toLocaleDateString(locale, { weekday: 'long' });
-  }, []);
   const matchDate = useCallback(
     (date) => {
       let day = date.getDate();
@@ -127,35 +121,13 @@ function CalendarSection(props) {
           showNavigation={false}
           onActiveStartDateChange={onMonthChange}
           tileContent={({ date }) => {
-            let horizontalOrientation = 'right';
             const matchingDate = matchDate(date);
 
             if (!matchingDate.matchDate) return;
 
-            const dayName = getDayName(
-              `${matchingDate.date.year}/${matchingDate.date.month}/${matchingDate.date.day}`,
-              'en-GB'
-            );
-
-            if (dayName) {
-              if (['Sunday'].includes(dayName)) horizontalOrientation = 'left';
-              else if (
-                [
-                  'Tuesday',
-                  'Wednesday',
-                  'Thursday',
-                  'Friday',
-                  'Saturday',
-                ].includes(dayName)
-              )
-                horizontalOrientation = 'center';
-            } else {
-              horizontalOrientation = 'right';
-            }
-
             return (
               matchingDate.matchDate && (
-                <Tooltip horizontalOrientation={horizontalOrientation}>
+                <div className="tooltip">
                   {matchingDate.matchDate.items.map((item, index) => (
                     <div className={`tooltip-item ${item.type}`} key={index}>
                       <time>
@@ -165,7 +137,7 @@ function CalendarSection(props) {
                       <h4>{item.title}</h4>
                     </div>
                   ))}
-                </Tooltip>
+                </div>
               )
             );
           }}

@@ -1,10 +1,9 @@
 const breakpoints = {
   xs: '20rem',
-  sm: '35rem',
+  sm: '36rem',
   md: '48rem',
-  lg: '60rem',
-  xl: '75rem',
-  '2xl': '85rem',
+  lg: '62rem',
+  '2xl': '80rem',
   '3xl': '100rem',
 };
 export default breakpoints;
