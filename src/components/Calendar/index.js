@@ -103,11 +103,7 @@ function CalendarSection(props) {
         {isLoading && <Loader loading={isLoading} />}
         <div className="react-calendar__navigation">
           <div className="react-calendar__navigation--container">
-            <div
-              aria-label=""
-              className="react-calendar__navigation__label"
-              type="button"
-            >
+            <div aria-label="" className="react-calendar__navigation__label">
               <span className="react-calendar__navigation__label__labelText react-calendar__navigation__label__labelText--from">
                 {currentMonthName} {new Date().getFullYear()}
               </span>
