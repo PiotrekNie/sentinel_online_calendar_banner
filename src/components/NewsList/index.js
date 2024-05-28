@@ -141,7 +141,6 @@ const CalendarContainer = () => {
   );
   const resetAfterTimeout = useCallback(() => {
     if (desktop) return;
-
     const allHighlightedDays = Array.from(
       calendarRef?.current.querySelectorAll(
         '.react-calendar__month-view__days__day'
@@ -178,6 +177,10 @@ const CalendarContainer = () => {
       className="calendar"
       ref={calendarRef}
       onBlur={() => {
+        clearTimeout(timer);
+        resetAfterTimeout();
+      }}
+      onTouchEnd={() => {
         clearTimeout(timer);
         resetAfterTimeout();
       }}

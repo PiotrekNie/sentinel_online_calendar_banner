@@ -138,7 +138,13 @@
           }
 
           &[class*='highlighted-'] {
-            cursor: pointer;
+            &:not(.react-calendar__month-view__days__day--neighboringMonth) {
+              cursor: pointer;
+            }
+
+            &.react-calendar__month-view__days__day--neighboringMonth {
+              cursor: not-allowed;
+            }
           }
 
           &.fade {
@@ -176,17 +182,25 @@
           &--highlighted {
             &[class*='highlighted'] {
               abbr {
-                color: $white;
+                &:not(
+                    .react-calendar__month-view__days__day--neighboringMonth
+                  ) {
+                  abbr {
+                    color: $white;
+                  }
+                }
               }
             }
           }
 
           &--weekend {
-            color: $gray;
+            color: rgba($white, 0.3);
           }
 
           &--neighboringMonth {
-            color: rgba($gray, 0.3);
+            abbr {
+              color: rgba($white, 0.3);
+            }
           }
 
           &:hover {
@@ -208,25 +222,53 @@
           text-align: center;
 
           &--weekend {
-            color: $gray;
+            color: rgba($white, 0.3);
           }
         }
       }
 
       .highlighted {
         &-maintenance {
-          abbr {
-            background-color: $purple;
+          &:not(.react-calendar__month-view__days__day--neighboringMonth) {
+            abbr {
+              background-color: $purple;
+            }
+          }
+          &.react-calendar__month-view__days__day--neighboringMonth {
+            pointer-events: none;
+
+            abbr {
+              background-color: rgba($purple, 0.3);
+            }
           }
         }
 
         &-event {
-          abbr {
-            background-color: $green;
+          &:not(.react-calendar__month-view__days__day--neighboringMonth) {
+            abbr {
+              background-color: $green;
+            }
+          }
+
+          &.react-calendar__month-view__days__day--neighboringMonth {
+            pointer-events: none;
+
+            abbr {
+              background-color: rgba($green, 0.3);
+            }
           }
         }
 
         &-mixed {
+          &.react-calendar__month-view__days__day--neighboringMonth {
+            pointer-events: none;
+            opacity: 0.3;
+
+            abbr {
+              color: $white;
+            }
+          }
+
           abbr {
             position: relative;
             overflow: hidden;
