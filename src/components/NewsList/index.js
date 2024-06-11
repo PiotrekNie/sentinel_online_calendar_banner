@@ -4,7 +4,7 @@ import CalendarSection from '../Calendar';
 import breakpoints from '../../utils/breakpointss';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 
-const CalendarContainer = () => {
+const CalendarContainer = ({ news }) => {
   const calendarRef = useRef(null);
   const isDesktop = useMediaQuery(`(min-width: ${breakpoints.md})`);
   const [init, setInit] = useState(false);
@@ -192,6 +192,8 @@ const CalendarContainer = () => {
         setTimer(newTimer);
 
         handleMouseOver(event);
+
+        if (news.length > 0) window.location.href = news;
       }}
       onMouseOver={handleMouseOver}
     >
