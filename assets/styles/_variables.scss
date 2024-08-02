@@ -5,7 +5,8 @@ $basic: $white;
 // Gray
 $black: #000000;
 $gray: #4c4c4c;
-$dark-gray: #151818;
+$gray-dark: #333333;
+$purple-dark: #151818;
 
 // Green
 $green: #006258;
@@ -17,6 +18,9 @@ $red: #da1414;
 // Purple
 $purple: #532ac9;
 
+// Orange
+$orange: #c45d23;
+
 // Font family
 $font-base: 'Montserrat', 'Segoe UI', roboto, oxygen-sans, ubuntu, cantarell,
   'Helvetica Neue', arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
@@ -27,9 +31,9 @@ $font-monospace: 'ESA', 'menlo', 'monaco', 'consolas', 'Liberation Mono',
 // A map of breakpoints.
 $breakpoints: (
   xs: 20rem,
-  sm: 36rem,
+  sm: 35rem,
   md: 48rem,
-  lg: 62rem,
-  '2xl': '80rem',
+  lg: 64rem,
+  '2xl': '75rem',
   '3xl': '100rem',
 );

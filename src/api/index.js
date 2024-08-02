@@ -1,11 +1,11 @@
-// const pageURL = document.location.origin;\
+// const pageURL = document.location.origin;
 const pageURL = 'https://soe.devel.esaportal.eu';
 
-const getCalendarData = async (page, date) => {
+const getCalendarData = async (date) => {
   try {
-    const url = new URL(`${pageURL}/o/news/calendar`);
+    const url = new URL(`${pageURL}/o/news/calendar/items`);
     const urlSearchParams = url.searchParams;
-
+    console.log(date);
     if (date) {
       if (date.month > 0) {
         urlSearchParams.set('month', date.month);
@@ -15,9 +15,6 @@ const getCalendarData = async (page, date) => {
         urlSearchParams.set('year', date.year);
       }
     }
-
-    urlSearchParams.set('page', page);
-    urlSearchParams.set('size', 99);
 
     const response = await fetch(url.toString());
     return await response.json();

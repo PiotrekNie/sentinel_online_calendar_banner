@@ -1,65 +1,41 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import Calendar from 'react-calendar';
 import Loader from '../Loader';
+import useRealDates from '../../hooks/useRealDates';
 
 function CalendarSection(props) {
   const { isLoading, highlights } = props;
   const calendarRef = useRef(null);
   const [value, setValue] = useState(new Date());
-  const [lastDay, setLastDay] = useState();
-  const [firstDay, setFirstDay] = useState();
+  const { formattedDate } = useRealDates();
   const [currentMonthName, setCurrentMonthName] = useState('');
-  const [currentMonth, setCurrentMonth] = useState({
-    date: {
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-    },
-  });
+  const currentMonth = useMemo(
+    () => ({
+      date: {
+        month: new Date().getMonth() + 1,
+        year: new Date().getFullYear(),
+      },
+    }),
+    []
+  );
   const [dates, setDates] = useState([]);
   const onChange = (nextValue) => {
     setValue(nextValue);
   };
-  const matchDate = useCallback(
+  const matchDates = useCallback(
     (date) => {
-      let day = date.getDate();
-      let month = date.getMonth() + 1;
-      const year = date.getFullYear();
+      const realDate = formattedDate(date);
 
-      if (day < 10) {
-        day = `0${day}`;
-      }
-
-      if (month < 10) {
-        month = `0${month}`;
-      }
-
-      const realDate = `${day}-${month}-${year}`;
-      const matchedDate = dates.find((val) => val.date === realDate);
-
-      return {
-        matchDate: matchedDate,
-        date: {
-          day,
-          month,
-          year,
-        },
-      };
+      return dates.find((val) => val.date === realDate);
     },
-    [dates]
+    [dates, formattedDate]
   );
-  const onMonthChange = (nextValue) => {
-    if (nextValue?.activeStartDate) {
-      const getMonth = new Date(nextValue.activeStartDate).getMonth();
-      const getYear = new Date(nextValue.activeStartDate).getFullYear();
-      const date = {
-        date: {
-          month: getMonth + 1,
-          year: getYear,
-        },
-      };
-      setCurrentMonth(date);
-    }
-  };
 
   useEffect(() => {
     setDates(highlights);
@@ -80,18 +56,7 @@ function CalendarSection(props) {
       'November',
       'December',
     ];
-    const firstDay = new Date(
-      currentMonth.date.year,
-      currentMonth.date.month - 1
-    );
-    const lastDay = new Date(
-      currentMonth.date.year,
-      currentMonth.date.month,
-      0
-    );
 
-    setFirstDay(firstDay);
-    setLastDay(lastDay);
     setCurrentMonthName(months[currentMonth.date.month - 1]);
   }, [currentMonth]);
 
@@ -112,45 +77,26 @@ function CalendarSection(props) {
         </div>
         <Calendar
           onChange={onChange}
-          minDate={firstDay}
-          maxDate={lastDay}
           showNavigation={false}
-          onActiveStartDateChange={onMonthChange}
-          tileContent={({ date }) => {
-            const matchingDate = matchDate(date);
-
-            if (!matchingDate.matchDate) return;
-
-            return (
-              matchingDate.matchDate && (
-                <div className="tooltip">
-                  {matchingDate.matchDate.items.map((item, index) => (
-                    <div className={`tooltip-item ${item.type}`} key={index}>
-                      <time>
-                        <span>{item.dateFrom}</span> -{' '}
-                        <span>{item.dateTo}</span>
-                      </time>
-                      <h4>{item.title}</h4>
-                    </div>
-                  ))}
-                </div>
-              )
-            );
-          }}
           tileClassName={({ date }) => {
-            const matchingDate = matchDate(date);
+            const matchingDate = matchDates(date);
 
-            if (matchingDate.matchDate) {
-              switch (matchingDate.matchDate.type) {
-                case 'maintenance':
-                  return `highlighted highlighted-maintenance date-${matchingDate.matchDate.articleDate}`;
-                case 'event':
-                  return `highlighted highlighted-event date-${matchingDate.matchDate.articleDate}`;
-                case 'mixed':
-                  return `highlighted highlighted-mixed date-${matchingDate.matchDate.articleDate}`;
-                default:
-                  break;
-              }
+            if (matchingDate) {
+              return 'highlighted';
+            }
+          }}
+          tileContent={({ date, view }) => {
+            const matchingDate = matchDates(date);
+
+            if (matchingDate) {
+              return (
+                <span className="colors">
+                  {view === 'month' &&
+                    matchingDate.colorScheme.map((color, index) => (
+                      <span className={color} key={index}></span>
+                    ))}
+                </span>
+              );
             }
           }}
           formatLongWeekday={({ date }) => {
