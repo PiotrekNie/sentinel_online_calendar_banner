@@ -1,10 +1,10 @@
 import './App.scss';
-import CalendarSection from './components/NewsList';
+import CalendarContainer from './components/NewsList';
 
 function App({ configuration }) {
   return (
     <div className="App">
-      <CalendarSection
+      <CalendarContainer
         news={configuration?.newsListURL ?? '/web/sentinel/calendar'}
       />
     </div>
