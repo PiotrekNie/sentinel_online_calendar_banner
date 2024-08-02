@@ -152,6 +152,10 @@ body {
 @import 'assets/styles/portlet';
 @import 'assets/styles/news-list';
 @import 'assets/styles/news-item';
-@import 'assets/styles/loader';
 @import 'assets/styles/calendar';
-@import 'assets/styles/tooltip';
+
+.has-control-menu.signed-in {
+  .calendar {
+    pointer-events: none;
+  }
+}

@@ -1,4 +1,6 @@
 .calendar {
+  cursor: pointer;
+
   &__heading {
     &--component {
       @include media-breakpoint-up(lg) {
@@ -6,9 +8,16 @@
       }
 
       &.loading {
-        opacity: 0.3;
         pointer-events: none;
         position: relative;
+
+        .react-calendar {
+          opacity: 0.3;
+
+          &__navigation {
+            opacity: 0.3;
+          }
+        }
       }
 
       .loader-container {
@@ -16,8 +25,11 @@
         left: 50%;
         top: 50%;
         pointer-events: none;
-        transform: translate(-50%, -50%);
         z-index: 10;
+
+        > span {
+          border-radius: 4px;
+        }
       }
     }
 
@@ -32,14 +44,14 @@
     max-width: 100%;
     color: $white;
     border-radius: 0 0 4px 4px;
-    background-color: $dark-gray;
+    background-color: $gray-dark;
     padding: 0 1.5rem 1.5rem;
     margin-top: -1px;
 
     &__navigation {
       display: flex;
       justify-content: center;
-      background-color: $dark-gray;
+      background-color: $gray-dark;
       border-radius: 4px 4px 0 0;
       padding: 0 1.125rem;
 
@@ -120,74 +132,52 @@
           box-shadow: none;
           border: none;
           color: $white;
-          font-size: 16px;
+          font-size: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 0 0.25rem;
-          z-index: 10;
-          transition: opacity 300ms ease-in-out;
-          pointer-events: none;
+          padding: 0.1rem;
 
           @include media-breakpoint-up(md) {
-            pointer-events: auto;
-          }
-
-          &:not([class*='highlighted-']) {
-            cursor: auto;
-          }
-
-          &[class*='highlighted-'] {
-            &:not(.react-calendar__month-view__days__day--neighboringMonth) {
-              cursor: pointer;
-            }
-
-            &.react-calendar__month-view__days__day--neighboringMonth {
-              cursor: not-allowed;
-            }
-          }
-
-          &.fade {
-            opacity: 0.5;
+            font-size: 16px;
+            padding: 0.125rem 0.25rem;
           }
 
           abbr {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 2.75rem;
-            height: 2.75rem;
+            width: calc(2.75rem - 17px);
+            height: 2.25rem;
             border-radius: 4px;
-            pointer-events: auto;
+            pointer-events: none;
+            padding: 0;
 
             @include media-breakpoint-up(md) {
-              pointer-events: none;
+              padding: 0.8rem 0;
               width: 3.75rem;
-              height: 2.375rem;
-            }
-
-            &.fade {
-              opacity: 0.5;
-            }
-
-            &.active {
-              + .tooltip {
-                opacity: 1;
-                transform: translate(-50%, 30px);
-              }
+              height: 3.75rem;
             }
           }
 
-          &--weekend,
-          &--highlighted {
-            &[class*='highlighted'] {
-              abbr {
-                &:not(
-                    .react-calendar__month-view__days__day--neighboringMonth
-                  ) {
+          &--weekend {
+            &.highlighted {
+              &:not(.react-calendar__month-view__days__day--neighboringMonth),
+              &:not(.react-calendar__month-view__days__day--weekend) {
+                abbr {
+                  color: $white;
+                }
+              }
+
+              &.react-calendar__month-view__days__day--weekend {
+                &:not(.react-calendar__tile--active) {
                   abbr {
-                    color: $white;
+                    color: rgba($white, 0.3);
                   }
+                }
+
+                &.react-calendar__tile--active {
+                  color: $white;
                 }
               }
             }
@@ -200,15 +190,6 @@
           &--neighboringMonth {
             abbr {
               color: rgba($white, 0.3);
-            }
-          }
-
-          &:hover {
-            @include media-breakpoint-up(md) {
-              .tooltip {
-                opacity: 1;
-                transform: translate(-50%, 30px);
-              }
             }
           }
         }
@@ -228,76 +209,70 @@
       }
 
       .highlighted {
-        &-maintenance {
-          &:not(.react-calendar__month-view__days__day--neighboringMonth) {
-            abbr {
+        position: relative;
+        cursor: pointer;
+
+        abbr {
+          position: relative;
+          z-index: 0;
+        }
+
+        &:hover {
+          abbr {
+            &:before {
+              background-color: rgba($gray-dark, 1);
+            }
+          }
+        }
+
+        .colors {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 2px;
+          position: absolute;
+          bottom: 4px;
+          width: 2rem;
+          left: 50%;
+          transform: translateX(-50%);
+          pointer-events: none;
+
+          @include media-breakpoint-up(md) {
+            bottom: 0.5rem;
+            width: 3.75rem;
+          }
+
+          span {
+            height: 4px;
+            width: 100%;
+            flex-grow: 1;
+            flex-basis: 3.75rem;
+            border-radius: 4px;
+            display: block;
+
+            @include media-breakpoint-up(md) {
+              height: 8px;
+            }
+
+            &.maintenance {
               background-color: $purple;
             }
-          }
-          &.react-calendar__month-view__days__day--neighboringMonth {
-            pointer-events: none;
 
-            abbr {
-              background-color: rgba($purple, 0.3);
-            }
-          }
-        }
-
-        &-event {
-          &:not(.react-calendar__month-view__days__day--neighboringMonth) {
-            abbr {
+            &.event {
               background-color: $green;
             }
-          }
 
-          &.react-calendar__month-view__days__day--neighboringMonth {
-            pointer-events: none;
-
-            abbr {
-              background-color: rgba($green, 0.3);
+            &.dashboard-event {
+              background-color: $orange;
             }
           }
         }
 
-        &-mixed {
-          &.react-calendar__month-view__days__day--neighboringMonth {
-            pointer-events: none;
-            opacity: 0.3;
-
-            abbr {
-              color: $white;
-            }
-          }
-
+        &.react-calendar__tile--active {
           abbr {
-            position: relative;
-            overflow: hidden;
-            z-index: 10;
-
-            &:before,
-            &:after {
-              content: '';
-              top: 0;
-              left: 0;
-              display: block;
-              width: 100%;
-              height: 100%;
-              position: absolute;
-              z-index: -1;
-            }
-
             &:before {
-              background-color: $green;
-            }
-
-            &:after {
-              background: linear-gradient(
-                to bottom left,
-                transparent 0%,
-                transparent 50%,
-                $purple 50%,
-                $purple 100%
-              );
+              background-color: rgba($gray-dark, 1);
+              border: 1px solid rgba($white, 0.7);
             }
           }
         }

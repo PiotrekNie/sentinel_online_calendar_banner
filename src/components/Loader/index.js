@@ -1,12 +1,15 @@
 import React from 'react';
-import { ImpulseSpinner } from 'react-spinners-kit';
+import { BarLoader } from 'react-spinners';
 
-const Loader = (props) => {
-  const { loading } = props;
-
+const Loader = ({ loading }) => {
   return (
     <div className="loader-container">
-      <ImpulseSpinner size={30} color="#00AE9D" loading={loading} />
+      <BarLoader
+        width={50}
+        color="#00AE9D"
+        loading={loading}
+        aria-label="Loading Calendar Data"
+      />
     </div>
   );
 };
