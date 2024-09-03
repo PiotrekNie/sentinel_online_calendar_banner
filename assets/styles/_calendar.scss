@@ -98,6 +98,7 @@
         font-weight: 500;
         font-size: 1rem;
         line-height: 2;
+        white-space: nowrap;
 
         @include media-breakpoint-up(md) {
           font-size: 1.5rem;
